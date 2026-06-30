@@ -3,10 +3,10 @@
 # BLE Controller library packaging
 #
 # Two categories of static libraries:
-#   blecontroller_stack          — BLE protocol stack (stack/, chip-independent)
-#   blecontroller_drv_<CHIP>     — Chip-specific drivers (drivers/<CHIP>/ + hal/)
+#   libtelink-unisdk-blecontroller-stack          — BLE protocol stack (stack/, chip-independent)
+#   libtelink-unisdk-blecontroller-hal_<CHIP>     — Chip-specific drivers (drivers/<CHIP>/ + hal/)
 #
-# Examples: blecontroller_drv_TL721X, blecontroller_drv_TL321X, blecontroller_drv_B92
+# Examples: libtelink-unisdk-blecontroller-hal_TL721X, libtelink-unisdk-blecontroller-hal_TL321X, libtelink-unisdk-blecontroller-hal_B92
 #
 # This file handles two modes:
 #   1) Dev mode  (libraries/ does NOT exist) — builds static libs from source
@@ -26,7 +26,7 @@ set(BLE_CTRL_LIB_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 # Determine the chip-specific driver library name from Kconfig.
 # CONFIG_TLK_CORE is set by the SoC Kconfig (e.g. "TL721X", "TL321X", "B92").
 if(CONFIG_TLK_CORE)
-    set(BLE_CTRL_DRV_TARGET "blecontroller_drv_${CONFIG_TLK_CORE}")
+    set(BLE_CTRL_DRV_TARGET "libtelink-unisdk-blecontroller-hal_${CONFIG_TLK_CORE}")
 else()
     message(FATAL_ERROR "CONFIG_TLK_CORE must be set to a valid chip identifier (e.g. TL721X, TL321X, B92)")
 endif()
@@ -42,8 +42,8 @@ if(NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/libraries)
     # =========================================================================
 
     # --- BLE protocol stack library (chip-independent) ---
-    add_library(blecontroller_stack STATIC EXCLUDE_FROM_ALL)
-    set_target_properties(blecontroller_stack PROPERTIES
+    add_library(libtelink-unisdk-blecontroller-stack STATIC EXCLUDE_FROM_ALL)
+    set_target_properties(libtelink-unisdk-blecontroller-stack PROPERTIES
         ARCHIVE_OUTPUT_DIRECTORY ${BLE_CTRL_LIB_OUTPUT_DIR}
     )
 
@@ -56,14 +56,14 @@ if(NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/libraries)
     # Propagate compiler options from the main target to both libraries
     get_target_property(_ble_ctrl_opts ${TARGET_NAME} COMPILE_OPTIONS)
     if(_ble_ctrl_opts)
-        target_compile_options(blecontroller_stack PRIVATE ${_ble_ctrl_opts})
+        target_compile_options(libtelink-unisdk-blecontroller-stack PRIVATE ${_ble_ctrl_opts})
         target_compile_options(${BLE_CTRL_DRV_TARGET} PRIVATE ${_ble_ctrl_opts})
     endif()
 
     # Collect source files via subdirectories.
     # Subdirectory CMakeLists.txt files use ${BLE_CTRL_DRV_TARGET} to add
     # sources to the chip-specific driver library.
-    add_subdirectory(stack)            # → blecontroller_stack
+    add_subdirectory(stack)            # → libtelink-unisdk-blecontroller-stack
     add_subdirectory(drivers)          # → ${BLE_CTRL_DRV_TARGET}
     add_subdirectory(hal)              # → ${BLE_CTRL_DRV_TARGET}
 
@@ -73,12 +73,12 @@ if(NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/libraries)
     # processed and their paths are captured.
     get_target_property(_ble_ctrl_includes ${TARGET_NAME} INCLUDE_DIRECTORIES)
     if(_ble_ctrl_includes)
-        target_include_directories(blecontroller_stack PRIVATE ${_ble_ctrl_includes})
+        target_include_directories(libtelink-unisdk-blecontroller-stack PRIVATE ${_ble_ctrl_includes})
         target_include_directories(${BLE_CTRL_DRV_TARGET} PRIVATE ${_ble_ctrl_includes})
     endif()
 
     # Link both libraries into the main executable
-    target_link_libraries(${TARGET_NAME} PRIVATE blecontroller_stack ${BLE_CTRL_DRV_TARGET})
+    target_link_libraries(${TARGET_NAME} PRIVATE libtelink-unisdk-blecontroller-stack ${BLE_CTRL_DRV_TARGET})
 else()
     # =========================================================================
     # Exported SDK mode — link the prebuilt static libraries directly
@@ -86,6 +86,6 @@ else()
     # Subdirectories are NOT added (sources have been removed from the export).
     # The prebuilt .a files were placed here by build_libs.sh.
     target_link_libraries(${TARGET_NAME} PRIVATE
-        ${BLE_CTRL_LIB_OUTPUT_DIR}/libblecontroller_stack.a
+        ${BLE_CTRL_LIB_OUTPUT_DIR}/libtelink-unisdk-blecontroller-stack.a
         ${BLE_CTRL_LIB_OUTPUT_DIR}/lib${BLE_CTRL_DRV_TARGET}.a)
 endif()
