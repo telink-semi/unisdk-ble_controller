@@ -59,7 +59,7 @@ else()
 
     # Chip-specific driver library (named per CONFIG_TLK_CORE)
     if(CONFIG_TLK_CORE)
-        set(_drv_lib_name "libtelink-unisdk-blecontroller-hal_${CONFIG_TLK_CORE}")
+        set(_drv_lib_name "telink-unisdk-blecontroller-hal_${CONFIG_TLK_CORE}")
         set(_drv_lib "${BLE_CTRL_BASE}/libraries/lib${_drv_lib_name}.a")
         if(EXISTS "${_drv_lib}")
             target_link_libraries(${ZEPHYR_CURRENT_MODULE_NAME}_interface INTERFACE
