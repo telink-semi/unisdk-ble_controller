@@ -21,7 +21,7 @@ target_include_directories(${TARGET_NAME} PRIVATE
 )
 
 # Common archive output directory for all BLE controller libraries
-set(BLE_CTRL_LIB_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(BLE_CTRL_LIB_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libraries)
 
 # Determine the chip-specific driver library name from Kconfig.
 # CONFIG_TLK_CORE is set by the SoC Kconfig (e.g. "TL721X", "TL321X", "B92").
@@ -36,7 +36,7 @@ target_sources(${TARGET_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/tlk_ble_controller_initial.c
 )
 
-if(NOT IS_DIRECTORY ${CMAKE_SOURCE_DIR}/libraries)
+if(NOT IS_DIRECTORY ${BLE_CTRL_LIB_OUTPUT_DIR})
     # =========================================================================
     # Dev mode — build the BLE controller static libraries from source
     # =========================================================================
