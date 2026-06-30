@@ -26,6 +26,15 @@
 
 #include "tlk_ble_controller_common.h"
 
+#define TLK_BLE_HCI_FLAG_EVENT_PHYTEST_2_WIRE_UART TLK_BIT(23)
+#define TLK_BLE_HCI_FLAG_EVENT_TLK_MODULE          TLK_BIT(24)
+#define TLK_BLE_HCI_FLAG_EVENT_BT_STD              TLK_BIT(25)
+#define TLK_BLE_HCI_FLAG_EVENT_STACK               TLK_BIT(26)
+#define TLK_BLE_HCI_FLAG_ACL_BT_STD                TLK_BIT(27)
+#define TLK_BLE_HCI_FLAG_BT_HCI_CMD                TLK_BIT(28)
+#define TLK_BLE_HCI_FLAG_ISO_DATE_STD              TLK_BIT(29)
+#define TLK_BLE_HCI_FLAG_CIS_DATA                  TLK_BIT(30)
+
 /**
  * @brief      HCI event handler
  * @param[in]  h - HCI Event type
