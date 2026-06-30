@@ -1,0 +1,178 @@
+# SPDX-License-Identifier: Apache-2.0
+
+menu "Telink BLE Controller"
+
+config TLK_BLE_CONTROLLER
+    bool "Telink BLE Controller Support"
+    default y
+    select TLK_PLIC
+    select TLK_RF
+    select TLK_SYSTEM_TIMER_IRQ_ENABLE
+    help
+        Enable Telink BLE Controller support
+
+if TLK_BLE_CONTROLLER
+
+# Controller Configuration
+# BLE Controller Configuration
+
+menu "BLE Controller"
+
+# HCI Buffer Configuration
+menu "HCI Buffer Configuration"
+
+config TLK_BLE_CONTROLLER_HCI_TX_BUFFER_NUMBER
+	int "HCI TX FIFO number"
+	range 4 32
+	default 8
+	help
+	  Number of HCI TX FIFO entries. Must be a power of 2.
+
+config TLK_BLE_CONTROLLER_HCI_TX_DATA_SIZE
+	int "HCI TX FIFO max packet length"
+	range 27 255
+	default 255
+	help
+	  Maximum HCI packet length used for TX FIFO size calculation.
+
+config TLK_BLE_CONTROLLER_HCI_RX_BUFFER_NUMBER
+	int "HCI RX FIFO number"
+	range 4 32
+	default 8
+	help
+	  Number of HCI RX FIFO entries. Must be a power of 2.
+
+config TLK_BLE_CONTROLLER_HCI_RX_DATA_SIZE
+	int "HCI RX FIFO max packet length"
+	range 27 255
+	default 255
+	help
+	  Maximum HCI packet length used for RX FIFO size calculation.
+
+config TLK_BLE_CONTROLLER_HCI_ACL_BUFFER_NUMBER
+	int "HCI ACL data FIFO number"
+	range 4 32
+	default 8
+	help
+	  Number of HCI ACL data FIFO entries. Must be a power of 2.
+
+config TLK_BLE_CONTROLLER_HCI_ACL_DATA_SIZE
+	int "HCI ACL data FIFO max data length"
+	range 27 251
+	default 251
+	help
+	  Maximum ACL data payload length used for FIFO size calculation.
+endmenu # HCI Buffer Configuration
+
+# Controller Feature Configuration
+menu "Controller Features"
+config TLK_BLE_CONTROLLER_LEGACY_ADV_ENABLE
+    bool "Enable Legacy Advertising"
+    default y
+    help
+        Enable legacy advertising mode.
+
+config TLK_BLE_CONTROLLER_LEGACY_SCAN_ENABLE
+    bool "Enable Legacy Scanning"
+    default y
+    help
+        Enable legacy scanning mode.
+
+config TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE
+    bool "Enable ACL Peripheral Role"
+    default y
+    help
+        Enable ACL peripheral (slave) role support.
+
+config TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE
+    bool "Enable ACL Central Role"
+    default y
+    help
+        Enable ACL central (master) role support.
+endmenu # Controller Features
+
+# ACL Connection Configuration
+menu "ACL Connection Configuration"
+
+if TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE
+
+config TLK_BLE_CONTROLLER_ACL_CENTRAL_MAX_NUM
+    int "ACL Central maximum number"
+    default 1
+    help
+        Maximum number of ACL central connections.
+
+config TLK_BLE_CONTROLLER_ACL_CENTRAL_MAX_TX_OCTETS
+    int "ACL Central Max TX Octets"
+    range 27 251
+    default 27
+    help
+        Maximum transmitted data packet size for ACL Central connections.
+        Should be in the range of 27 ~ 251.
+        For CIS central, must be equal to or greater than 36.
+
+config TLK_BLE_CONTROLLER_ACL_CENTRAL_TX_PACKET_COUNT
+    int "ACL Central TX FIFO Number"
+    range 8 256
+    default 9
+    help
+        Number of ACL Central TX FIFO entries.
+        Must be (2^n) + 1 (power of 2, then add 1).
+
+endif # TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE
+
+if TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE
+
+config TLK_BLE_CONTROLLER_ACL_PERIPHERAL_MAX_NUM
+    int "ACL Peripheral maximum number"
+    default 1
+    help
+        Maximum number of ACL peripheral connections.
+
+config TLK_BLE_CONTROLLER_ACL_PERIPHERAL_MAX_TX_OCTETS
+    int "ACL Peripheral Max TX Octets"
+    range 27 251
+    default 27
+    help
+        Maximum transmitted data packet size for ACL Peripheral connections.
+        Should be in the range of 27 ~ 251.
+
+config TLK_BLE_CONTROLLER_ACL_PERIPHERAL_TX_PACKET_COUNT
+    int "ACL Peripheral TX FIFO Number"
+    range 8 256
+    default 9
+    help
+        Number of ACL Peripheral TX FIFO entries.
+        Must be (2^n) + 1 (power of 2, then add 1).
+
+endif # TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE
+
+if TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE || TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE
+
+config TLK_BLE_CONTROLLER_ACL_MAX_RX_OCTETS
+    int "ACL Connection Max RX Octets"
+    range 27 251
+    default 27
+    help
+        Maximum received data packet size for ACL connections.
+        Refer to BLE SPEC "4.5.10 Data PDU length management".
+        Should be in the range of 27 ~ 251.
+        For CIS peripheral, must be equal to or greater than 36.
+
+config TLK_BLE_CONTROLLER_ACL_RX_PACKET_COUNT
+    int "ACL RX FIFO Number"
+    range 4 256
+    default 8
+    help
+        Number of ACL RX FIFO entries shared by all connections.
+        Must be a power of 2. At least 4. Recommended values: 4, 8, 16.
+
+endif # TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE || TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE
+
+endmenu # ACL Connection Configuration
+
+endmenu # BLE Controller
+
+endif
+
+endmenu # Telink BLE Controller
