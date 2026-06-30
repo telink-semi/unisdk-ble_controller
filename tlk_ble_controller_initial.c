@@ -23,16 +23,12 @@
  *******************************************************************************************************/
 
 #include "tlk_ble_controller_initial.h"
-#include "tlk_ble_controller_ble.h"
 #include "tlk_ble_controller_common.h"
 #include "tlk_ble_controller_hci.h"
-#include "ll/tlk_ble_controller_ll.h"
-#include "hal/common/tlk_ble_controller_hal_rf.h"
-#include "hal/common/tlk_ble_controller_hal_flash.h"
 #include "core/include/tlk_stimer.h"
 #include <string.h>
+#include "hal/include/tlk_ble_controller_hal_log.h"
 
-#include "tlk_ble_controller_hal_log.h"
 TLK_BLE_LOG_MODULE_REGISTER(ble_ctrl_init, CONFIG_BT_TLX_LOG_LEVEL);
 
 /********************* ACL connection LinkLayer TX & RX data FIFO allocation, Begin *******************************/
@@ -75,7 +71,7 @@ static uint8_t tlk_ble_ll_hci_rx_fifo[TLK_BLE_HCI_ACL_IN_FIFO_SIZE(CONFIG_TLK_BL
 /**
  * @brief   HCI ACL data FIFO buffer for controller-to-host ACL data packets.
  */
-static uint8_t tlk_ble_ll_hci_acl_fifo[CALCULATE_HCI_ACL_DATA_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_HCI_ACL_DATA_SIZE) * CONFIG_TLK_BLE_CONTROLLER_HCI_ACL_BUFFER_NUMBER] = {0};
+static uint8_t tlk_ble_ll_hci_acl_fifo[TLK_BLE_CALCULATE_HCI_ACL_DATA_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_HCI_ACL_DATA_SIZE) * CONFIG_TLK_BLE_CONTROLLER_HCI_ACL_BUFFER_NUMBER] = {0};
 /******************** HCI FIFO allocation, End ***********************************/
 
 /**
@@ -83,24 +79,11 @@ static uint8_t tlk_ble_ll_hci_acl_fifo[CALCULATE_HCI_ACL_DATA_FIFO_SIZE(CONFIG_T
  */
 int tlk_ble_controller_initial(void)
 {
-    uint8_t mac_public[6];
-    uint8_t mac_random_static[6];
     TLK_BLE_LOG_INF("BLE controller initializing");
-    tlk_ble_controller_hal_initMacAddress(flash_sector_mac_address, mac_public, mac_random_static);
-
-    /* Register system timer callback for BLE stack */
-    tlk_stimer_register_callback(tlk_ble_stimer_irq_handler);
-
-    /* RF hardware initialization (BLE mode) */
-    tlk_ble_controller_hal_rf_init();
-
-    /* Register BLE stack protocol handler through HAL bridge */
-    tlk_ble_controller_hal_rf_register_irq_callback(tlk_ble_rf_irq_handler);
-
     //////////// LinkLayer Initialization  Begin /////////////////////////
     tlk_ble_ll_initBasicMCU();
 
-    tlk_ble_ll_initStandby_module(mac_public);
+    tlk_ble_ll_initStandby_module();
 
 #if TLK_IS_ENABLED(CONFIG_TLK_BLE_CONTROLLER_LEGACY_ADV_ENABLE)
     tlk_ble_ll_initLegacyAdvertising_module();
@@ -131,7 +114,7 @@ int tlk_ble_controller_initial(void)
     #endif
     #if CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_MAX_NUM
     /* ACL Peripheral TX FIFO */
-    tlk_ble_ll_initAclPeriphrTxFifo(tlk_ble_ll_acl_per_tx_fifo, TLK_BLE_ACL_PERIPHERAL_TX_FIFO_SIZE, CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_TX_PACKET_COUNT, CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_MAX_NUM);
+    tlk_ble_ll_initAclPeripheralTxFifo(tlk_ble_ll_acl_per_tx_fifo, TLK_BLE_ACL_PERIPHERAL_TX_FIFO_SIZE, CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_TX_PACKET_COUNT, CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_MAX_NUM);
     #endif
 #endif
 
@@ -145,7 +128,7 @@ int tlk_ble_controller_initial(void)
                               TLK_BLE_HCI_ACL_IN_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_HCI_RX_DATA_SIZE),
                               CONFIG_TLK_BLE_CONTROLLER_HCI_RX_BUFFER_NUMBER);
     tlk_ble_controller_hci_initAclDataFifo(tlk_ble_ll_hci_acl_fifo,
-                                   CALCULATE_HCI_ACL_DATA_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_HCI_ACL_DATA_SIZE),
+                                   TLK_BLE_CALCULATE_HCI_ACL_DATA_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_HCI_ACL_DATA_SIZE),
                                    CONFIG_TLK_BLE_CONTROLLER_HCI_ACL_BUFFER_NUMBER);
     //////////// HCI FIFO Initialization  End /////////////////////////
 

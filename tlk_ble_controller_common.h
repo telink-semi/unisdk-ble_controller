@@ -167,11 +167,32 @@ typedef enum
 
 #define TLK_BLE_MAC_MATCH16(md, ms)                        (md[0] == ms[0] && md[1] == ms[1] && md[2] == ms[2])
 
+//4(DMA_len) + 2(BLE header) + ISORxOct + 4(MIC) + 3(CRC) + 8(ExtraInfo)
+#define     TLK_BLE_CONTROLLER_RF_RX_EXT_LEN       (21)
+
+//10 = 4(DMA_len) + 2(BLE header) + 4(MIC)
+#define     TLK_BLE_CONTROLLER_RF_TX_EXT_LEN       (10)
+
+/**
+ * @brief   RX Data buffer length = n + 21, then 16 Byte align
+ *          n + 21 = 4(DMA_len) + 2(BLE header) + n + 4(MIC) + 3(CRC) + 8(ExtraInfo)
+            RX buffer size must be be 16*n, due to MCU design
+ */
+#define     TLK_BLE_CONTROLLER_LL_CAL_COMMON_RX_FIFO_SIZE(n)       (((n + TLK_BLE_CONTROLLER_RF_RX_EXT_LEN) + 15) / 16 *16)
+#define     TLK_BLE_CONTROLLER_LL_CAL_ACL_RX_FIFO_SIZE(maxRxOct)   TLK_BLE_CONTROLLER_LL_CAL_COMMON_RX_FIFO_SIZE(maxRxOct)
+/**
+ * @brief   ACL TX Data buffer length = maxTxOct + 10, then 16 Byte align
+ *          maxTxOct + 10 = 4(DMA_len) + 2(BLE header) + maxTxOct + 4(MIC)
+            TX buffer size must be be 16*n, due to MCU design
+ */
+#define     TLK_BLE_CONTROLLER_LL_CAL_ACL_TX_FIFO_SIZE(maxTxOct)   (((maxTxOct+TLK_BLE_CONTROLLER_RF_TX_EXT_LEN) + 15) / 16 *16)
+
+
 /**
  * @brief   HCI ACL DATA buffer length = LE_ACL_Data_Packet_Length + 4, tlk_ble_pkt_len is integer multiple of 4, so result is 4 Byte align
  *          4 = 2(connHandle) + 1(PBFlag) + 1(length)
  */
-#define CALCULATE_HCI_ACL_DATA_FIFO_SIZE(tlk_ble_pkt_len) ((tlk_ble_pkt_len + 4 + 3) / 4 * 4)
+#define TLK_BLE_CALCULATE_HCI_ACL_DATA_FIFO_SIZE(tlk_ble_pkt_len) ((tlk_ble_pkt_len + 4 + 3) / 4 * 4)
 
 
 /* HCI ACL in data format in telink  (host to controller)
