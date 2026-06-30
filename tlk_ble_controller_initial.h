@@ -41,8 +41,9 @@ extern "C" {
  * 1. must be: 2^n, (power of 2)
  * 2. at least 4; recommended value: 4, 8, 16
  */
+#if TLK_IS_ENABLED(CONFIG_TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE) || TLK_IS_ENABLED(CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE)
 #define TLK_BLE_LL_ACL_RX_FIFO_SIZE TLK_BLE_CONTROLLER_LL_CAL_ACL_RX_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_ACL_MAX_RX_OCTETS) //user can not change !!!                //user set value
-
+#endif
 
 /**
  * @brief   ACL TX buffer size & number
@@ -60,11 +61,11 @@ extern "C" {
  * 1. (ACL_xxx_TX_FIFO_SIZE * (ACL_xxx_TX_FIFO_NUM - 1)) must be less than 4096 (4K)
  *    so when ACL TX FIFO size equal to or bigger than 256, ACL TX FIFO number can only be 9(can not use 17 or 33), cause 256*(17-1)=4096
  */
-#if defined(CONFIG_TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE)
+#if TLK_IS_ENABLED(CONFIG_TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE)
 #define TLK_BLE_ACL_CENTRAL_TX_FIFO_SIZE TLK_BLE_CONTROLLER_LL_CAL_ACL_TX_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_ACL_CENTRAL_MAX_TX_OCTETS) //user can not change !!!         //user set value
 #endif
 
-#if defined(CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE)
+#if TLK_IS_ENABLED(CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE)
 #define TLK_BLE_ACL_PERIPHERAL_TX_FIFO_SIZE TLK_BLE_CONTROLLER_LL_CAL_ACL_TX_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_MAX_TX_OCTETS) //user can not change !!!          //user set value
 #endif
 

@@ -33,26 +33,28 @@ TLK_BLE_LOG_MODULE_REGISTER(ble_ctrl_init, CONFIG_BT_TLX_LOG_LEVEL);
 
 /********************* ACL connection LinkLayer TX & RX data FIFO allocation, Begin *******************************/
 
+#if TLK_IS_ENABLED(CONFIG_TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE) || TLK_IS_ENABLED(CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE)
 /**
  * @brief   ACL RX buffer, shared by all connections to hold LinkLayer RF RX data.
  *          user should define and initialize this buffer if either ACL Central or ACL Peripheral is used.
  */
 uint8_t tlk_ble_ll_acl_rx_fifo[TLK_BLE_LL_ACL_RX_FIFO_SIZE * CONFIG_TLK_BLE_CONTROLLER_ACL_RX_PACKET_COUNT] = {0};
+#endif
 
-#if CONFIG_TLK_BLE_CONTROLLER_ACL_CENTRAL_MAX_NUM
+#if TLK_IS_ENABLED(CONFIG_TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE)
 /**
  * @brief   ACL Central TX buffer, shared by all central connections to hold LinkLayer RF TX data.
  *          ACL Central TX buffer should be defined only when ACL connection central role is used.
  */
-uint8_t tlk_ble_ll_acl_cen_tx_fifo[TLK_BLE_ACL_CENTRAL_TX_FIFO_SIZE * CONFIG_TLK_BLE_CONTROLLER_ACL_CENTRAL_TX_PACKET_COUNT * CONFIG_TLK_BLE_CONTROLLER_ACL_CENTRAL_MAX_NUM] = {0};
+uint8_t tlk_ble_ll_acl_cen_tx_fifo[TLK_BLE_ACL_CENTRAL_TX_FIFO_SIZE * CONFIG_TLK_BLE_CONTROLLER_ACL_CENTRAL_TX_PACKET_COUNT * CONFIG_TLK_BLE_CONTROLLER_ACL_CENTRAL_MAX_NUM];
 #endif
 
-#if CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_MAX_NUM
+#if TLK_IS_ENABLED(CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE)
 /**
  * @brief   ACL Peripheral TX buffer, shared by all peripheral connections to hold LinkLayer RF TX data.
  *          ACL Peripheral TX buffer should be defined only when ACL connection peripheral role is used.
  */
-uint8_t tlk_ble_ll_acl_per_tx_fifo[TLK_BLE_ACL_PERIPHERAL_TX_FIFO_SIZE * CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_TX_PACKET_COUNT * CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_MAX_NUM] = {0};
+uint8_t tlk_ble_ll_acl_per_tx_fifo[TLK_BLE_ACL_PERIPHERAL_TX_FIFO_SIZE * CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_TX_PACKET_COUNT * CONFIG_TLK_BLE_CONTROLLER_ACL_PERIPHERAL_MAX_NUM];
 #endif
 /******************** ACL connection LinkLayer TX & RX data FIFO allocation, End ***********************************/
 
@@ -61,17 +63,17 @@ uint8_t tlk_ble_ll_acl_per_tx_fifo[TLK_BLE_ACL_PERIPHERAL_TX_FIFO_SIZE * CONFIG_
 /**
  * @brief   HCI TX FIFO buffer for host-to-controller HCI commands and data.
  */
-static uint8_t tlk_ble_ll_hci_tx_fifo[TLK_BLE_HCI_ACL_IN_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_HCI_TX_DATA_SIZE) * CONFIG_TLK_BLE_CONTROLLER_HCI_TX_BUFFER_NUMBER] = {0};
+static uint8_t tlk_ble_ll_hci_tx_fifo[TLK_BLE_HCI_ACL_IN_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_HCI_TX_DATA_SIZE) * CONFIG_TLK_BLE_CONTROLLER_HCI_TX_BUFFER_NUMBER];
 
 /**
  * @brief   HCI RX FIFO buffer for controller-to-host HCI events.
  */
-static uint8_t tlk_ble_ll_hci_rx_fifo[TLK_BLE_HCI_ACL_IN_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_HCI_RX_DATA_SIZE) * CONFIG_TLK_BLE_CONTROLLER_HCI_RX_BUFFER_NUMBER] = {0};
+static uint8_t tlk_ble_ll_hci_rx_fifo[TLK_BLE_HCI_ACL_IN_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_HCI_RX_DATA_SIZE) * CONFIG_TLK_BLE_CONTROLLER_HCI_RX_BUFFER_NUMBER];
 
 /**
  * @brief   HCI ACL data FIFO buffer for controller-to-host ACL data packets.
  */
-static uint8_t tlk_ble_ll_hci_acl_fifo[TLK_BLE_CALCULATE_HCI_ACL_DATA_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_HCI_ACL_DATA_SIZE) * CONFIG_TLK_BLE_CONTROLLER_HCI_ACL_BUFFER_NUMBER] = {0};
+static uint8_t tlk_ble_ll_hci_acl_fifo[TLK_BLE_CALCULATE_HCI_ACL_DATA_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_HCI_ACL_DATA_SIZE) * CONFIG_TLK_BLE_CONTROLLER_HCI_ACL_BUFFER_NUMBER];
 /******************** HCI FIFO allocation, End ***********************************/
 
 /**

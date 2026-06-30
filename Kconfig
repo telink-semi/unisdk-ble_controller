@@ -94,13 +94,19 @@ endmenu # Controller Features
 # ACL Connection Configuration
 menu "ACL Connection Configuration"
 
-if TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE
-
 config TLK_BLE_CONTROLLER_ACL_CENTRAL_MAX_NUM
     int "ACL Central maximum number"
-    default 1
+    default 1 if TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE
+    default 0
     help
         Maximum number of ACL central connections.
+
+config TLK_BLE_CONTROLLER_ACL_PERIPHERAL_MAX_NUM
+    int "ACL Peripheral maximum number"
+    default 1 if TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE
+    default 0
+    help
+        Maximum number of ACL peripheral connections.
 
 config TLK_BLE_CONTROLLER_ACL_CENTRAL_MAX_TX_OCTETS
     int "ACL Central Max TX Octets"
@@ -119,16 +125,6 @@ config TLK_BLE_CONTROLLER_ACL_CENTRAL_TX_PACKET_COUNT
         Number of ACL Central TX FIFO entries.
         Must be (2^n) + 1 (power of 2, then add 1).
 
-endif # TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE
-
-if TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE
-
-config TLK_BLE_CONTROLLER_ACL_PERIPHERAL_MAX_NUM
-    int "ACL Peripheral maximum number"
-    default 1
-    help
-        Maximum number of ACL peripheral connections.
-
 config TLK_BLE_CONTROLLER_ACL_PERIPHERAL_MAX_TX_OCTETS
     int "ACL Peripheral Max TX Octets"
     range 27 251
@@ -144,10 +140,6 @@ config TLK_BLE_CONTROLLER_ACL_PERIPHERAL_TX_PACKET_COUNT
     help
         Number of ACL Peripheral TX FIFO entries.
         Must be (2^n) + 1 (power of 2, then add 1).
-
-endif # TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE
-
-if TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE || TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE
 
 config TLK_BLE_CONTROLLER_ACL_MAX_RX_OCTETS
     int "ACL Connection Max RX Octets"
@@ -166,8 +158,6 @@ config TLK_BLE_CONTROLLER_ACL_RX_PACKET_COUNT
     help
         Number of ACL RX FIFO entries shared by all connections.
         Must be a power of 2. At least 4. Recommended values: 4, 8, 16.
-
-endif # TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE || TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE
 
 endmenu # ACL Connection Configuration
 
