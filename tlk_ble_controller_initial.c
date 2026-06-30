@@ -25,7 +25,7 @@
 #include "tlk_ble_controller_initial.h"
 #include "tlk_ble_controller_ble.h"
 #include "tlk_ble_controller_common.h"
-#include "hci/tlk_ble_controller_hci.h"
+#include "tlk_ble_controller_hci.h"
 #include "ll/tlk_ble_controller_ll.h"
 #include "hal/common/tlk_ble_controller_hal_rf.h"
 #include "hal/common/tlk_ble_controller_hal_flash.h"
@@ -138,19 +138,19 @@ int tlk_ble_controller_initial(void)
     //////////// LinkLayer Initialization  End /////////////////////////
 
     //////////// HCI FIFO Initialization  Begin /////////////////////////
-    tlk_ble_ll_initHciTxFifo(tlk_ble_ll_hci_tx_fifo,
+    tlk_ble_controller_hci_initTxFifo(tlk_ble_ll_hci_tx_fifo,
                               TLK_BLE_HCI_ACL_IN_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_HCI_TX_DATA_SIZE),
                               CONFIG_TLK_BLE_CONTROLLER_HCI_TX_BUFFER_NUMBER);
-    tlk_ble_ll_initHciRxFifo(tlk_ble_ll_hci_rx_fifo,
+    tlk_ble_controller_hci_initRxFifo(tlk_ble_ll_hci_rx_fifo,
                               TLK_BLE_HCI_ACL_IN_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_HCI_RX_DATA_SIZE),
                               CONFIG_TLK_BLE_CONTROLLER_HCI_RX_BUFFER_NUMBER);
-    tlk_ble_ll_initHciAclDataFifo(tlk_ble_ll_hci_acl_fifo,
+    tlk_ble_controller_hci_initAclDataFifo(tlk_ble_ll_hci_acl_fifo,
                                    CALCULATE_HCI_ACL_DATA_FIFO_SIZE(CONFIG_TLK_BLE_CONTROLLER_HCI_ACL_DATA_SIZE),
                                    CONFIG_TLK_BLE_CONTROLLER_HCI_ACL_BUFFER_NUMBER);
     //////////// HCI FIFO Initialization  End /////////////////////////
 
-    tlk_ble_init_err_t ret = tlk_ble_blc_contr_checkControllerInitialization();
-    if(ret != TLK_BLE_INIT_SUCCESS){
+    tlk_ble_controller_status_t ret = tlk_ble_blc_contr_checkControllerInitialization();
+    if(ret != TLK_BLE_SUCCESS){
         TLK_BLE_LOG_ERR("BLE controller check initialization failed, err: 0x%02x", ret);
         return -1;
     }
