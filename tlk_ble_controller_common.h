@@ -205,4 +205,11 @@ typedef enum
  */
 #define TLK_BLE_HCI_ACL_IN_FIFO_SIZE(n) ((n + 5 + 3) / 4 * 4)
 
-#endif
+/**
+ * @brief   main_loop for BLE stack, process data and event
+ * @param   none
+ * @return  none
+ */
+void tlk_ble_controller_main_loop_task(void);
+
+#endif //TLK_BLE_COMMON_H
