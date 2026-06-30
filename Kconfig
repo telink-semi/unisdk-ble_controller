@@ -31,35 +31,35 @@ config TLK_BLE_CONTROLLER_HCI_TX_BUFFER_NUMBER
 config TLK_BLE_CONTROLLER_HCI_TX_DATA_SIZE
 	int "HCI TX FIFO max packet length"
 	range 27 255
-	default 255
+	default 27
 	help
 	  Maximum HCI packet length used for TX FIFO size calculation.
 
 config TLK_BLE_CONTROLLER_HCI_RX_BUFFER_NUMBER
 	int "HCI RX FIFO number"
 	range 4 32
-	default 8
+	default 4
 	help
 	  Number of HCI RX FIFO entries. Must be a power of 2.
 
 config TLK_BLE_CONTROLLER_HCI_RX_DATA_SIZE
 	int "HCI RX FIFO max packet length"
 	range 27 255
-	default 255
+	default 27
 	help
 	  Maximum HCI packet length used for RX FIFO size calculation.
 
 config TLK_BLE_CONTROLLER_HCI_ACL_BUFFER_NUMBER
 	int "HCI ACL data FIFO number"
 	range 4 32
-	default 8
+	default 4
 	help
 	  Number of HCI ACL data FIFO entries. Must be a power of 2.
 
 config TLK_BLE_CONTROLLER_HCI_ACL_DATA_SIZE
 	int "HCI ACL data FIFO max data length"
 	range 27 251
-	default 251
+	default 27
 	help
 	  Maximum ACL data payload length used for FIFO size calculation.
 endmenu # HCI Buffer Configuration
@@ -68,25 +68,25 @@ endmenu # HCI Buffer Configuration
 menu "Controller Features"
 config TLK_BLE_CONTROLLER_LEGACY_ADV_ENABLE
     bool "Enable Legacy Advertising"
-    default y
+    default n
     help
         Enable legacy advertising mode.
 
 config TLK_BLE_CONTROLLER_LEGACY_SCAN_ENABLE
     bool "Enable Legacy Scanning"
-    default y
+    default n
     help
         Enable legacy scanning mode.
 
 config TLK_BLE_CONTROLLER_ACL_PERIPHERAL_ENABLE
     bool "Enable ACL Peripheral Role"
-    default y
+    default n
     help
         Enable ACL peripheral (slave) role support.
 
 config TLK_BLE_CONTROLLER_ACL_CENTRAL_ENABLE
     bool "Enable ACL Central Role"
-    default y
+    default n
     help
         Enable ACL central (master) role support.
 endmenu # Controller Features
