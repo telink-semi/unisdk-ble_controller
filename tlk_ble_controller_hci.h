@@ -106,4 +106,12 @@ void tlk_ble_controller_hci_registerEventHandler(tlk_ble_controller_hci_event_ha
  */
 void tlk_ble_controller_hci_registerDataHandler(tlk_ble_controller_hci_data_handler_t handle);
 
+/**
+ * @brief      this function is used to send ACL data to HOST
+ * @param[in]  handle - connect handle
+ * @param[in]  *p - the pointer of l2cap data
+ * @return     0
+ */
+int tlk_ble_controller_hci_sendACLData(uint16_t handle, uint8_t *p);
+
 #endif /* _TLK_BLE_CONTROLLER_HCI_H_ */
