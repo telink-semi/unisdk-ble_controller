@@ -36,56 +36,24 @@ target_sources(${TARGET_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/tlk_ble_controller_initial.c
 )
 
-if(NOT IS_DIRECTORY ${BLE_CTRL_LIB_OUTPUT_DIR})
+if(IS_DIRECTORY ${BLE_CTRL_LIB_OUTPUT_DIR})
     # =========================================================================
-    # Dev mode — build the BLE controller static libraries from source
-    # =========================================================================
-
-    # --- BLE protocol stack library (chip-independent) ---
-    add_library(telink-unisdk-blecontroller-stack STATIC EXCLUDE_FROM_ALL)
-    set_target_properties(telink-unisdk-blecontroller-stack PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${BLE_CTRL_LIB_OUTPUT_DIR}
-    )
-
-    # --- BLE driver library (chip-specific, named per chip) ---
-    add_library(${BLE_CTRL_DRV_TARGET} STATIC EXCLUDE_FROM_ALL)
-    set_target_properties(${BLE_CTRL_DRV_TARGET} PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${BLE_CTRL_LIB_OUTPUT_DIR}
-    )
-
-    # Propagate compiler options from the main target to both libraries
-    get_target_property(_ble_ctrl_opts ${TARGET_NAME} COMPILE_OPTIONS)
-    if(_ble_ctrl_opts)
-        target_compile_options(telink-unisdk-blecontroller-stack PRIVATE ${_ble_ctrl_opts})
-        target_compile_options(${BLE_CTRL_DRV_TARGET} PRIVATE ${_ble_ctrl_opts})
-    endif()
-
-    # Collect source files via subdirectories.
-    # Subdirectory CMakeLists.txt files use ${BLE_CTRL_DRV_TARGET} to add
-    # sources to the chip-specific driver library.
-    add_subdirectory(stack)            # → libtelink-unisdk-blecontroller-stack
-    add_subdirectory(drivers)          # → ${BLE_CTRL_DRV_TARGET}
-    add_subdirectory(hal)              # → ${BLE_CTRL_DRV_TARGET}
-
-    # Propagate include directories from the main target to both libraries.
-    # This is placed AFTER add_subdirectory() so that the subdirectories'
-    # target_include_directories(${TARGET_NAME} ...) calls have already been
-    # processed and their paths are captured.
-    get_target_property(_ble_ctrl_includes ${TARGET_NAME} INCLUDE_DIRECTORIES)
-    if(_ble_ctrl_includes)
-        target_include_directories(telink-unisdk-blecontroller-stack PRIVATE ${_ble_ctrl_includes})
-        target_include_directories(${BLE_CTRL_DRV_TARGET} PRIVATE ${_ble_ctrl_includes})
-    endif()
-
-    # Link both libraries into the main executable
-    target_link_libraries(${TARGET_NAME} PRIVATE telink-unisdk-blecontroller-stack ${BLE_CTRL_DRV_TARGET})
-else()
-    # =========================================================================
-    # Exported SDK mode — link the prebuilt static libraries directly
+    # SDK mode — link the prebuilt static libraries directly
     # =========================================================================
     # Subdirectories are NOT added (sources have been removed from the export).
     # The prebuilt .a files were placed here by build_libs.sh.
     target_link_libraries(${TARGET_NAME} PRIVATE
         ${BLE_CTRL_LIB_OUTPUT_DIR}/libtelink-unisdk-blecontroller-stack.a
         ${BLE_CTRL_LIB_OUTPUT_DIR}/lib${BLE_CTRL_DRV_TARGET}.a)
+
+else()
+    # =========================================================================
+    # Dev mode — compile sources directly into ${TARGET_NAME}
+    #
+    # Same structure as lib mode, but without ARCHIVE_OUTPUT_DIRECTORY.
+    # The intermediate .a artifacts end up in the build directory (not in
+    # libraries/ in the source tree).
+    # =========================================================================
+    include(${CMAKE_CURRENT_SOURCE_DIR}/src.cmake)
+
 endif()
