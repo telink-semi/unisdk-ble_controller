@@ -42,7 +42,7 @@
  * @param[in]  n - the length of HCI event parameter
  * @return     0
  */
-typedef int (*tlk_ble_controller_hci_event_handler_t)(uint32_t h, uint8_t *para, int n);
+typedef int (*tlk_ble_controller_hci_event_handler_t)(uint32_t h, uint8_t *para, uint32_t n);
 
 /**
  * @brief      Controller data handler
@@ -60,7 +60,7 @@ typedef int (*tlk_ble_controller_hci_data_handler_t)(uint16_t conn, uint8_t *p);
  * @return     status, 0x00:  succeed
  *                     other: failed
  */
-tlk_ble_controller_status_t tlk_ble_controller_hci_initTxFifo(uint8_t *pTxbuf, int fifo_size, int fifo_number);
+tlk_ble_controller_status_t tlk_ble_controller_hci_initTxFifo(uint8_t *pTxbuf, uint32_t fifo_size, uint8_t fifo_number);
 
 /**
  * @brief      for user to initialize HCI RX FIFO.
@@ -70,7 +70,7 @@ tlk_ble_controller_status_t tlk_ble_controller_hci_initTxFifo(uint8_t *pTxbuf, i
  * @return     status, 0x00:  succeed
  *                     other: failed
  */
-tlk_ble_controller_status_t tlk_ble_controller_hci_initRxFifo(uint8_t *pRxbuf, int fifo_size, int fifo_number);
+tlk_ble_controller_status_t tlk_ble_controller_hci_initRxFifo(uint8_t *pRxbuf, uint32_t fifo_size, uint8_t fifo_number);
 
 /**
  * @brief      for user to initialize HCI RX ACL Data FIFO.
@@ -80,7 +80,7 @@ tlk_ble_controller_status_t tlk_ble_controller_hci_initRxFifo(uint8_t *pRxbuf, i
  * @return     status, 0x00:  succeed
  *                     other: failed
  */
-tlk_ble_controller_status_t tlk_ble_controller_hci_initAclDataFifo(uint8_t *pAclbuf, int fifo_size, int fifo_number);
+tlk_ble_controller_status_t tlk_ble_controller_hci_initAclDataFifo(uint8_t *pAclbuf, uint32_t fifo_size, uint8_t fifo_number);
 
 
 /**

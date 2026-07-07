@@ -151,7 +151,7 @@ void tlk_ble_ll_initAclConnection_module(void);
  * @return     status, 0x00:  succeed
  *                     other: failed
  */
-tlk_ble_controller_status_t tlk_ble_ll_setMaxConnectionNumber(int max_master_num, int max_slave_num);
+tlk_ble_controller_status_t tlk_ble_ll_setMaxConnectionNumber(uint8_t max_master_num, uint8_t max_slave_num);
 
 /**
  * @brief      for user to initialize LinkLayer ACL connection RX FIFO.
@@ -162,7 +162,7 @@ tlk_ble_controller_status_t tlk_ble_ll_setMaxConnectionNumber(int max_master_num
  * @return     status, 0x00:  succeed
  *                     other: failed
  */
-tlk_ble_controller_status_t tlk_ble_ll_initAclConnRxFifo(uint8_t *pRxbuf, int fifo_size, int fifo_number);
+tlk_ble_controller_status_t tlk_ble_ll_initAclConnRxFifo(uint8_t *pRxbuf, uint32_t fifo_size, uint8_t fifo_number);
 
 
 /**
@@ -174,7 +174,7 @@ tlk_ble_controller_status_t tlk_ble_ll_initAclConnRxFifo(uint8_t *pRxbuf, int fi
  * @return     status, 0x00:  succeed
  *                     other: failed
  */
-tlk_ble_controller_status_t tlk_ble_ll_initAclCentralTxFifo(uint8_t *pTxbuf, int fifo_size, int fifo_number, int tlk_ble_conn_number);
+tlk_ble_controller_status_t tlk_ble_ll_initAclCentralTxFifo(uint8_t *pTxbuf, uint32_t fifo_size, uint8_t fifo_number, uint8_t tlk_ble_conn_number);
 
 /**
  * @brief      set ACL data length for Master and Slave.
@@ -195,7 +195,7 @@ tlk_ble_controller_status_t tlk_ble_ll_setAclConnMaxOctetsNumber(uint8_t maxRxOc
  * @return     status, 0x00:  succeed
  *                     other: failed
  */
-tlk_ble_controller_status_t tlk_ble_ll_initAclPeripheralTxFifo(uint8_t *pTxbuf, int fifo_size, int fifo_number, int tlk_ble_conn_number);
+tlk_ble_controller_status_t tlk_ble_ll_initAclPeripheralTxFifo(uint8_t *pTxbuf, uint32_t fifo_size, uint8_t fifo_number, uint8_t tlk_ble_conn_number);
 
 /**
  * @brief      this function is used check if any controller buffer initialized by application incorrect.
