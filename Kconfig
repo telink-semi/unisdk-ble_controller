@@ -8,6 +8,8 @@ config TLK_BLE_CONTROLLER
     select TLK_PLIC
     select TLK_RF
     select TLK_SYSTEM_TIMER_IRQ_ENABLE
+    select TLK_CRYPTO
+    select TLK_CRYPTO_SKE
     help
         Enable Telink BLE Controller support
 
