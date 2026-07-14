@@ -2,11 +2,10 @@
 #
 # BLE Controller library packaging
 #
-# Two categories of static libraries:
-#   libtelink-unisdk-blecontroller-stack          — BLE protocol stack (stack/, chip-independent)
-#   libtelink-unisdk-blecontroller-hal_<CHIP>     — Chip-specific drivers (drivers/<CHIP>/ + hal/)
+# A single combined static library per chip:
+#   libtelink-unisdk-blecontroller_<CHIP>  — Combined BLE controller (stack + drivers + hal)
 #
-# Examples: libtelink-unisdk-blecontroller-hal_TL721X, libtelink-unisdk-blecontroller-hal_TL321X, libtelink-unisdk-blecontroller-hal_B92
+# Examples: libtelink-unisdk-blecontroller_TL721X, libtelink-unisdk-blecontroller_TL321X, libtelink-unisdk-blecontroller_B92
 #
 # This file handles two modes:
 #   1) Dev mode  (libraries/ does NOT exist) — builds static libs from source
@@ -23,10 +22,14 @@ target_include_directories(${TARGET_NAME} PRIVATE
 # Common archive output directory for all BLE controller libraries
 set(BLE_CTRL_LIB_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/libraries)
 
-# Determine the chip-specific driver library name from Kconfig.
+# Determine the combined BLE controller library name from Kconfig.
 # CONFIG_TLK_CORE is set by the SoC Kconfig (e.g. "TL721X", "TL321X", "B92").
 if(CONFIG_TLK_CORE)
-    set(BLE_CTRL_DRV_TARGET "telink-unisdk-blecontroller-hal_${CONFIG_TLK_CORE}")
+    if(CONFIG_TLK_TOOLCHAIN_TYPE STREQUAL "zephyr")
+        set(BLE_CTRL_DRV_TARGET "telink-unisdk-blecontroller_${CONFIG_TLK_CORE}-zephyr")
+    else()
+        set(BLE_CTRL_DRV_TARGET "telink-unisdk-blecontroller_${CONFIG_TLK_CORE}")
+    endif()
 else()
     message(FATAL_ERROR "CONFIG_TLK_CORE must be set to a valid chip identifier (e.g. TL721X, TL321X, B92)")
 endif()
@@ -38,12 +41,11 @@ target_sources(${TARGET_NAME} PRIVATE
 
 if(IS_DIRECTORY ${BLE_CTRL_LIB_OUTPUT_DIR})
     # =========================================================================
-    # SDK mode — link the prebuilt static libraries directly
+    # SDK mode — link the prebuilt combined static library directly
     # =========================================================================
     # Subdirectories are NOT added (sources have been removed from the export).
-    # The prebuilt .a files were placed here by build_libs.sh.
+    # The prebuilt .a file was placed here by build_libs.sh.
     target_link_libraries(${TARGET_NAME} PRIVATE
-        ${BLE_CTRL_LIB_OUTPUT_DIR}/libtelink-unisdk-blecontroller-stack.a
         ${BLE_CTRL_LIB_OUTPUT_DIR}/lib${BLE_CTRL_DRV_TARGET}.a)
 
 else()

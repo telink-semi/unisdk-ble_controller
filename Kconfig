@@ -4,7 +4,7 @@ menu "Telink BLE Controller"
 
 config TLK_BLE_CONTROLLER
     bool "Telink BLE Controller Support"
-    default y
+    default n
     select TLK_PLIC
     select TLK_RF
     select TLK_SYSTEM_TIMER_IRQ_ENABLE
