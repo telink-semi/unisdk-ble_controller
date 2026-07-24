@@ -212,9 +212,11 @@ bool tlk_ble_hci_all_command_handler(const struct tlk_ble_hci_command_format *p_
 /**
  * @brief   Send an HCI packet (H4 framed) to the Host.
  *          First byte is H4 header type, rest is payload.
+ *          Default implementation does nothing. User must provide a strong override.
  * @param[in] p_buf Pointer to the H4 framed packet.
  * @param[in] len Total length including H4 header.
  */
+__attribute__((weak))
 void tlk_ble_ll_hci_send_packet(const void *p_buf, uint16_t len);
 
 /**
