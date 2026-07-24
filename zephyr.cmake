@@ -34,7 +34,15 @@ zephyr_include_directories(
 )
 
 # ============================================================================
-# 3. Source files and library linking
+# 3. Open-source sources (compiled in both modes)
+#
+# tlk_ble_controller_initial.c is open-source and must be compiled in both
+# Dev and SDK modes.  The prebuilt .a does not contain this symbol.
+# ============================================================================
+zephyr_sources(${BLE_CTRL_BASE}/tlk_ble_controller_initial.c)
+
+# ============================================================================
+# 4. Source files and library linking
 #
 # Two modes:
 #   Dev mode  (libraries/ does NOT exist): compile sources via zephyr_sources()
@@ -47,26 +55,14 @@ if(NOT EXISTS "${BLE_CTRL_BASE}/libraries")
 # SDK mode — link prebuilt BLE controller libraries
 # ============================================================================
 else()
-    # Stack library (chip-independent)
-    set(_stack_lib "${BLE_CTRL_BASE}/libraries/libtelink-unisdk-blecontroller-stack-zephyr.a")
-    if(EXISTS "${_stack_lib}")
-        target_link_libraries(${ZEPHYR_CURRENT_MODULE_NAME}_interface INTERFACE
-            "${_stack_lib}")
-        message(STATUS "UniSDK SDK: BLE: Linking ${_stack_lib}")
-    else()
-        message(WARNING "UniSDK SDK: BLE stack lib not found: ${_stack_lib}")
-    endif()
-
-    # Chip-specific driver library (named per CONFIG_TLK_CORE)
     if(CONFIG_TLK_CORE)
-        set(_drv_lib_name "telink-unisdk-blecontroller-hal-zephyr_${CONFIG_TLK_CORE}")
-        set(_drv_lib "${BLE_CTRL_BASE}/libraries/lib${_drv_lib_name}.a")
-        if(EXISTS "${_drv_lib}")
+        set(_blecontroller_lib "${BLE_CTRL_BASE}/libraries/libtelink-unisdk-blecontroller_${CONFIG_TLK_CORE}-zephyr.a")
+        if(EXISTS "${_blecontroller_lib}")
             target_link_libraries(${ZEPHYR_CURRENT_MODULE_NAME}_interface INTERFACE
-                "${_drv_lib}")
-            message(STATUS "UniSDK SDK: BLE: Linking ${_drv_lib}")
+                "${_blecontroller_lib}")
+            message(STATUS "UniSDK SDK: BLE: Linking ${_blecontroller_lib}")
         else()
-            message(WARNING "UniSDK SDK: BLE driver lib not found: ${_drv_lib}")
+            message(WARNING "UniSDK SDK: BLE controller lib not found: ${_blecontroller_lib}")
         endif()
     endif()
 endif()
