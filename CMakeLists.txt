@@ -14,6 +14,10 @@
 # The BLE controller packaging is completely independent of the core UniSDK
 # library system — no coupling with telink_add_library() or library.cmake.
 
+if(NOT CONFIG_TLK_BLE_CONTROLLER)
+    return()
+endif()
+
 # Include paths are always needed (headers are always present)
 target_include_directories(${TARGET_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
